@@ -1,15 +1,23 @@
 import React, { useEffect } from "react";
-import actions from "../actions/productActions";
-import { useSelector } from "react-redux";
+import {
+  deleteProduct,
+  fetchAllProducts,
+} from "../redux/Products/actionCreator";
+import { useSelector, useDispatch } from "react-redux";
 
 const AllProducts = () => {
+  const dispatch = useDispatch();
+
   const products = useSelector((state) => state.Products);
 
+  console.log(products);
+
   useEffect(() => {
-    actions.fetchAllProducts();
+    dispatch(fetchAllProducts());
+    dispatch(deleteProduct(1));
   }, []);
 
-  return <div>{products}</div>;
+  return <div>{products?.products[0]?.id}</div>;
 };
 
 export default AllProducts;
