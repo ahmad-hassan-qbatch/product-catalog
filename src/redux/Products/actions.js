@@ -46,7 +46,7 @@ const actions = {
   editProductSuccess: (editProduct) => {
     return {
       type: actions.EDIT_PRODUCT_SUCCESS,
-      payload: { editProduct },
+      payload: { product: editProduct },
     };
   },
 

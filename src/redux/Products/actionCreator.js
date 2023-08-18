@@ -1,14 +1,15 @@
 import axios from "axios";
 import actions from "./actions";
 
-export const fetchAllProducts = () => {
+export const fetchAllProducts = (skip = 0) => {
   return async (dispatch) => {
     try {
       dispatch(actions.fetchProductsBegin());
 
       const response = await axios.get("https://dummyjson.com/products", {
         params: {
-          limit: 0,
+          limit: 15,
+          skip,
         },
       });
 
@@ -23,13 +24,12 @@ export const addProduct = (newProduct) => {
   return async (dispatch) => {
     try {
       dispatch(actions.addProductBegin());
-
       const response = await axios.post(
         "https://dummyjson.com/products/add",
         newProduct
       );
-
-      dispatch(actions.addProductSuccess(response.data));
+      newProduct = { ...newProduct, id: response.data.id };
+      dispatch(actions.addProductSuccess(newProduct));
     } catch (error) {
       console.log(error);
     }
