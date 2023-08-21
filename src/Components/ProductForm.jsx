@@ -1,12 +1,14 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useReducer } from "react";
+import React, { Suspense, useEffect, useReducer, useState } from "react";
 import { fetchAllCategory } from "../redux/Categories/actionCreator";
 import { addProduct, editProduct } from "../redux/Products/actionCreator";
 import _ from "lodash";
 import "../App.css";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import SizeVariation from "./SizeVariation";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import ColorVariation from "./ColorVariation";
+
+const SizeVariation = React.lazy(() => import("./SizeVariation"));
 
 let initialState = {
   title: "",
@@ -15,64 +17,81 @@ let initialState = {
   category: "",
   brand: "",
   sizeData: [{ price: "", stock: "", name: "" }],
+  colors: [{ hex: "", size: null }],
 };
 
 const formReducer = (state, action) => {
   switch (action.type) {
     case "SET_FIELD":
       return { ...state, [action.field]: action.value };
-    case "SET_SIZE_FIELD":
+    case "SET_VARIATION_FIELD":
       return {
         ...state,
-        sizeData: _.map(state.sizeData, (size, index) => {
+        [action.variation]: _.map(state[action.variation], (size, index) => {
           if (index === action.index) {
             size[action.field] = action.value;
           }
           return size;
         }),
       };
-    case "ADD_SIZE_INPUT":
+    case "ADD_VARIATION_INPUT":
       return {
         ...state,
-        sizeData: [...state.sizeData, { price: "", stock: "", name: "" }],
+        [action.variation]: [...state[action.variation], action.object],
       };
-    case "DELETE_SIZE_INPUT":
-      if (state.sizeData.length === 1) {
+    case "DELETE_VARIATION_INPUT":
+      if (state[action.variation].length === 1) {
         return {
           ...state,
         };
       }
-
       return {
         ...state,
-        sizeData: _.initial(state.sizeData),
+        [action.variation]: _.initial(state[action.variation]),
       };
+
+    case "EDIT":
+      return action.product;
     case "RESET":
-      return initialState;
+      return _.cloneDeep(initialState);
     default:
       return state;
   }
 };
 
-function ProductForm({ product }) {
-  if (product !== undefined) {
-    initialState = product;
-  }
-  const [formData, formDispatch] = useReducer(formReducer, initialState);
+function ProductForm() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [formData, formDispatch] = useReducer(
+    formReducer,
+    _.cloneDeep(initialState)
+  );
+
   const category = useSelector((state) => state.Categories);
+  const loading = useSelector((state) => state.Products.loading);
+  const error = useSelector((state) => state.Products.error);
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const dispatch = useDispatch();
-  console.log(formData);
-  const handleSizeChange = (index, field, value) => {
-    formDispatch({ type: "SET_SIZE_FIELD", field, value, index });
+
+  const handleVariationChange = (variation, index, field, value) => {
+    formDispatch({
+      type: "SET_VARIATION_FIELD",
+      variation,
+      field,
+      value,
+      index,
+    });
   };
 
   const handleChange = (field, value) => {
     formDispatch({ type: "SET_FIELD", field, value });
   };
 
-  const handleSizeLength = (type) => {
-    formDispatch({ type });
+  const handleVaritaionLength = (type, variation, object) => {
+    formDispatch({ type, variation, object });
   };
+
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
 
@@ -85,14 +104,32 @@ function ProductForm({ product }) {
   const handleSubmit = () => {
     if (!formData?.id) {
       dispatch(addProduct(formData));
+      setIsSubmitted("Product Added");
+      formDispatch({ type: "RESET" });
     } else {
       dispatch(editProduct(formData));
+      setIsSubmitted("Product Edited");
     }
-    formDispatch({ type: "RESET" });
   };
+
   useEffect(() => {
     dispatch(fetchAllCategory());
+    if (location?.state?.product) {
+      formDispatch({ type: "EDIT", product: location?.state?.product });
+    }
   }, []);
+
+  useEffect(() => {
+    if (isSubmitted !== false) {
+      if (!loading && error) {
+        alert(error);
+      }
+      if (!loading && error === null) {
+        alert(`${isSubmitted}`);
+        navigate("/home");
+      }
+    }
+  }, [loading, error, isSubmitted]);
 
   return (
     <>
@@ -167,35 +204,48 @@ function ProductForm({ product }) {
                 onChange={handleImageChange}
               />
             </div>
+            <Suspense fallback={<div>Loading...</div>}>
+              {formData?.sizeData ? (
+                <SizeVariation
+                  handleSizeChange={handleVariationChange}
+                  sizeData={formData.sizeData}
+                  handleSizeLength={handleVaritaionLength}
+                />
+              ) : (
+                <div className="grid grid-cols-1 gap-2 w-full lg:grid-cols-2">
+                  <input
+                    type="text"
+                    className="w-full rounded-md bg-slate-300 p-2"
+                    placeholder="Price"
+                    value={formData.price}
+                    onChange={(e) => handleChange("price", e.target.value)}
+                    required
+                  ></input>
 
-            {formData?.sizeData ? (
-              <SizeVariation
-                handleSizeChange={handleSizeChange}
-                sizeData={formData.sizeData}
-                handleSizeLength={handleSizeLength}
-              />
-            ) : (
-              <div className="grid grid-cols-1 gap-2 w-full lg:grid-cols-2">
-                <input
-                  type="text"
-                  className="w-full rounded-md bg-slate-300 p-2"
-                  placeholder="Price"
-                  value={formData.price}
-                  onChange={(e) => handleChange("price", e.target.value)}
-                  required
-                ></input>
+                  <input
+                    type="text"
+                    className="w-full rounded-md bg-slate-300 p-2"
+                    placeholder="Stock"
+                    value={formData.stock}
+                    onChange={(e) => handleChange("stock", e.target.value)}
+                    required
+                  ></input>
+                  <br />
+                </div>
+              )}
+            </Suspense>
 
-                <input
-                  type="text"
-                  className="w-full rounded-md bg-slate-300 p-2"
-                  placeholder="Stock"
-                  value={formData.stock}
-                  onChange={(e) => handleChange("stock", e.target.value)}
-                  required
-                ></input>
-                <br />
-              </div>
-            )}
+            <Suspense fallback={<div>Loading...</div>}>
+              {formData?.colors && (
+                <ColorVariation
+                  sizeData={formData.sizeData}
+                  handleColorChange={handleVariationChange}
+                  colors={formData.colors}
+                  handleColorLength={handleVaritaionLength}
+                />
+              )}
+            </Suspense>
+
             {formData?.id ? (
               <button
                 className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
@@ -215,7 +265,7 @@ function ProductForm({ product }) {
             )}
           </form>
           <p className="mt-4">
-            <Link to="/all" className=" text-blue-500 underline">
+            <Link to="/Home" className=" text-blue-500 underline">
               ALL
             </Link>
           </p>
