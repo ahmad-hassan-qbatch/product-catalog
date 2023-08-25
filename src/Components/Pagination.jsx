@@ -55,7 +55,7 @@ const Pagination = ({ totalPages, selectedPage, category, searchParam }) => {
           onClick={() => {
             handlePageNoClick(1);
           }}
-          className="flex items-center invisible md:visible justify-center px-4 h-10 leading-none bg-white text-gray-600 border border-gray-300 rounded-l-md hover:bg-gray-100 hover:text-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+          className="flex items-center invisible md:visible justify-center px-4 h-10 leading-none bg-white text-gray-600 border border-gray-300 rounded-l-md hover:bg-gray-100 hover:text-gray-800"
         >
           First
         </button>
@@ -82,7 +82,7 @@ const Pagination = ({ totalPages, selectedPage, category, searchParam }) => {
           onClick={() => {
             handlePageNoClick(totalPages);
           }}
-          className="flex items-center justify-center invisible md:visible px-4 h-10 leading-none bg-white text-gray-600 border border-gray-300 rounded-r-md hover:bg-gray-100 hover:text-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+          className="flex items-center justify-center invisible md:visible px-4 h-10 leading-none bg-white text-gray-600 border border-gray-300 rounded-r-md hover:bg-gray-100 hover:text-gray-800 "
         >
           Last
         </button>

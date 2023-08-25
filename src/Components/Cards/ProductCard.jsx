@@ -29,7 +29,6 @@ const ProductCard = ({ product }) => {
   }, [product.colors]);
   return (
     <>
-      {/* w-auto h-auto max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex justify-center */}
       <div className="relative bg-white border border-gray-200 rounded-lg shadow flex justify-center h-[390px]">
         <img
           src={product.thumbnail}
@@ -37,14 +36,14 @@ const ProductCard = ({ product }) => {
         />
         <div className="absolute top-40 w-11/12">
           <div className="px-5 py-3 bg-white border border-gray-200 rounded-lg bg-opacity-70">
-            <p className="text-xl font-bold text-gray-900 dark:text-white overflow-hidden whitespace-nowrap overflow-ellipsis w-auto">
+            <p className="text-xl font-bold text-gray-900  overflow-hidden whitespace-nowrap overflow-ellipsis w-auto">
               {product.title}
             </p>
-            <p className="text-md text-gray-500 dark:text-white overflow-hidden whitespace-nowrap overflow-ellipsis">
+            <p className="text-md text-gray-500 overflow-hidden whitespace-nowrap overflow-ellipsis">
               {product.category}
             </p>
             <div className="flex justify-between">
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-gray-600">
                 Price: $
                 {product.sizeData
                   ? product.sizeData[selectedSize].price
@@ -59,7 +58,7 @@ const ProductCard = ({ product }) => {
                     : product.stock !== 0
                     ? "text-green-600"
                     : "text-red-600"
-                } dark:text-green-300`}
+                }`}
               >
                 {product.sizeData
                   ? product.sizeData[selectedSize].stock !== 0
@@ -75,7 +74,7 @@ const ProductCard = ({ product }) => {
             {product.rating ? (
               <div className="flex items-center h-7">
                 <StarFilled className="w-4 h-4 text-yellow-300 mr-1" />
-                <span className="text-md font-semibold tracking-tight text-gray-900 dark:text-white">
+                <span className="text-md font-semibold tracking-tight text-gray-900">
                   {product.rating}
                 </span>
               </div>
@@ -146,7 +145,7 @@ const ProductCard = ({ product }) => {
                 onClick={() => {
                   navigate("/edit", { state: { product: product } });
                 }}
-                className="flex items-center justify-center w-auto text-white hover:bg-blue-800 bg-gradient-to-r from-purple-600 to-blue-600  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-300 ease-in-out hover:scale-110"
+                className="flex items-center justify-center w-auto text-white hover:bg-blue-800 bg-gradient-to-r from-purple-600 to-blue-600  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition duration-300 ease-in-out hover:scale-110"
               >
                 Edit <EditOutlined className="ml-2" />
               </button>

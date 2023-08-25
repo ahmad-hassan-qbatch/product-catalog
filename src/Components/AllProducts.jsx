@@ -100,7 +100,7 @@ const AllProducts = () => {
               selectedCategory={category ?? ""}
             />
           </Suspense>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white overflow-hidden whitespace-nowrap overflow-ellipsis mb-4">
+          <h1 className="text-3xl font-bold text-gray-900 overflow-hidden whitespace-nowrap overflow-ellipsis mb-4">
             {_.startCase(category)}
           </h1>
           {products?.products.length === 0 ? (

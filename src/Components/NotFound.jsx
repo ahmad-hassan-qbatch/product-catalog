@@ -5,16 +5,16 @@ import { WarningFilled } from "@ant-design/icons";
 
 const NotFound = ({ errorMsg }) => {
   return (
-    <section className=" dark:bg-gray-900 ">
+    <section>
       <div className="container flex mt-6 mx-auto mb-10">
         <div className="flex flex-col items-center max-w-sm mx-auto text-center">
           <WarningFilled className="text-8xl text-gray-500 mb-5" />
 
-          <h1 className=" text-2xl font-semibold text-gray-800 dark:text-white md:text-3xl">
+          <h1 className=" text-2xl font-semibold text-gray-800 md:text-3xl">
             {errorMsg ? errorMsg : "Page not found"}
           </h1>
           {!errorMsg && (
-            <p className="mt-4 text-gray-500 dark:text-gray-400">
+            <p className="mt-4 text-gray-500 ">
               The page you are looking for doesn&apos;t exist.
             </p>
           )}
