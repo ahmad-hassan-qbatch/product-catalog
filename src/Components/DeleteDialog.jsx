@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from "react";
+import "../App.css";
 
 const DeleteConfirmation = ({ id, handleDelete, setIsDialogVisible }) => {
-
   return (
     <div
       id="confirmation-alert"
@@ -10,7 +10,7 @@ const DeleteConfirmation = ({ id, handleDelete, setIsDialogVisible }) => {
     >
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <p className="text-gray-700 mb-4">
-          Are you sure you want to delete this show?
+          Are you sure you want to delete this Product?
         </p>
         <div className="flex justify-end">
           <button

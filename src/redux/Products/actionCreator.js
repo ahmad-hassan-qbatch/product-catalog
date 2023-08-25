@@ -1,18 +1,6 @@
 import axios from "axios";
 import actions from "./actions";
-
-const slackMessage = async (error) => {
-  await fetch(
-    "https://hooks.slack.com/services/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",
-    {
-      method: "POST",
-      body: `{"text": "Error ${error.name}.\\n${error.message}"}`,
-    }
-  )
-    .then((response) => response.text())
-    .then((response) => console.log(response))
-    .catch((error) => console.log("error", error));
-};
+import slackMessage from "../../utils/slackIntegration";
 
 export const fetchAllProducts = (skip = 0) => {
   return async (dispatch) => {
@@ -92,15 +80,20 @@ export const editProduct = (editProduct) => {
   };
 };
 
-export const searchProduct = (title) => {
+export const searchProduct = (title, skip = 0) => {
   return async (dispatch) => {
     try {
       dispatch(actions.searchProductBegin());
 
       const res = await axios.get(`https://dummyjson.com/products/search`, {
-        params: { q: title },
+        params: {
+          limit: 15,
+          skip,
+          q: title,
+        },
       });
-      dispatch(actions.searchProductSuccess(res.data.products));
+      
+      dispatch(actions.searchProductSuccess(res.data));
     } catch (error) {
       await slackMessage(error);
       dispatch(actions.apiError(error));

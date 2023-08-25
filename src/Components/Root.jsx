@@ -1,18 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import NavBar from "./NavBar";
+import Footer from "./Footer";
+import "../App.css";
 import { Outlet } from "react-router-dom";
-import DataContext from "./context";
 
 const Root = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
   return (
     <>
-      <DataContext.Provider value={[selectedCategory, setSelectedCategory]}>
-        <NavBar />
-        <main>
-          <Outlet />
-        </main>
-      </DataContext.Provider>
+      <NavBar />
+      <main className="m-0 h-full">
+        <Outlet />
+      </main>
+      <Footer />
     </>
   );
 };

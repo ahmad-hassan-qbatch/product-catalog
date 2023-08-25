@@ -1,275 +1,255 @@
 /* eslint-disable react/prop-types */
-import React, { Suspense, useEffect, useReducer, useState } from "react";
+import React, { useEffect } from "react";
 import { fetchAllCategory } from "../redux/Categories/actionCreator";
 import { addProduct, editProduct } from "../redux/Products/actionCreator";
-import _ from "lodash";
 import "../App.css";
+import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ColorVariation from "./ColorVariation";
 
 const SizeVariation = React.lazy(() => import("./SizeVariation"));
 
-let initialState = {
+let initialData = {
   title: "",
   description: "",
   thumbnail: "",
   category: "",
   brand: "",
   sizeData: [{ price: "", stock: "", name: "" }],
-  colors: [{ hex: "", size: null }],
-};
-
-const formReducer = (state, action) => {
-  switch (action.type) {
-    case "SET_FIELD":
-      return { ...state, [action.field]: action.value };
-    case "SET_VARIATION_FIELD":
-      return {
-        ...state,
-        [action.variation]: _.map(state[action.variation], (size, index) => {
-          if (index === action.index) {
-            size[action.field] = action.value;
-          }
-          return size;
-        }),
-      };
-    case "ADD_VARIATION_INPUT":
-      return {
-        ...state,
-        [action.variation]: [...state[action.variation], action.object],
-      };
-    case "DELETE_VARIATION_INPUT":
-      if (state[action.variation].length === 1) {
-        return {
-          ...state,
-        };
-      }
-      return {
-        ...state,
-        [action.variation]: _.initial(state[action.variation]),
-      };
-
-    case "EDIT":
-      return action.product;
-    case "RESET":
-      return _.cloneDeep(initialState);
-    default:
-      return state;
-  }
+  colors: [{ hex: "", size: "" }],
 };
 
 function ProductForm() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [formData, formDispatch] = useReducer(
-    formReducer,
-    _.cloneDeep(initialState)
-  );
 
   const category = useSelector((state) => state.Categories);
-  const loading = useSelector((state) => state.Products.loading);
-  const error = useSelector((state) => state.Products.error);
-
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const dispatch = useDispatch();
 
-  const handleVariationChange = (variation, index, field, value) => {
-    formDispatch({
-      type: "SET_VARIATION_FIELD",
-      variation,
-      field,
-      value,
-      index,
-    });
-  };
-
-  const handleChange = (field, value) => {
-    formDispatch({ type: "SET_FIELD", field, value });
-  };
-
-  const handleVaritaionLength = (type, variation, object) => {
-    formDispatch({ type, variation, object });
-  };
-
-  const handleImageChange = async (event) => {
-    const file = event.target.files[0];
-
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      formDispatch({ type: "SET_FIELD", field: "thumbnail", value: imageUrl });
-    }
-  };
-
-  const handleSubmit = () => {
-    if (!formData?.id) {
-      dispatch(addProduct(formData));
-      setIsSubmitted("Product Added");
-      formDispatch({ type: "RESET" });
+  const handleSubmit = (values) => {
+    if (!values?.id) {
+      dispatch(addProduct(values));
     } else {
-      dispatch(editProduct(formData));
-      setIsSubmitted("Product Edited");
+      dispatch(editProduct(values));
     }
+    navigate("/home");
   };
 
   useEffect(() => {
     dispatch(fetchAllCategory());
-    if (location?.state?.product) {
-      formDispatch({ type: "EDIT", product: location?.state?.product });
-    }
   }, []);
 
-  useEffect(() => {
-    if (isSubmitted !== false) {
-      if (!loading && error) {
-        alert(error);
-      }
-      if (!loading && error === null) {
-        alert(`${isSubmitted}`);
-        navigate("/home");
-      }
-    }
-  }, [loading, error, isSubmitted]);
+  const validatorForAPI = Yup.object({
+    title: Yup.string().required("Title is Required"),
+    brand: Yup.string().required("Brand is Required"),
+    description: Yup.string().required("Description is Required"),
+    thumbnail: Yup.string().required("Image is Required"),
+    category: Yup.string().required("Category is Required"),
+    price: Yup.number().required("Price is Required"),
+    stock: Yup.number().required("Stock is Required"),
+  });
 
-  return (
-    <>
-      <div className="flex h-auto items-center justify-center">
-        <div className="w-1/2 flex flex-col items-center justify-center rounded-lg bg-white p-8 shadow-md">
-          {formData?.id ? (
-            <h1 className="mb-4 text-2xl font-bold">Edit Product</h1>
-          ) : (
-            <h1 className="mb-4 text-2xl font-bold">Add Product</h1>
-          )}
+  const validatorForNew = Yup.object({
+    title: Yup.string().required("Title is Required"),
+    brand: Yup.string().required("Brand is Required"),
+    description: Yup.string().required("Description is Required"),
+    thumbnail: Yup.string().required("Image is Required"),
+    category: Yup.string().required("Category is Required"),
+    sizeData: Yup.array()
+      .of(
+        Yup.object({
+          name: Yup.string().required("Name is Required"),
+          price: Yup.string().required("Price is Required"),
+          stock: Yup.string().required("Stock is Required"),
+        })
+      )
+      .min(1, "You need at least one Size")
+      .required("Required"),
+    colors: Yup.array()
+      .of(
+        Yup.object({
+          hex: Yup.string().required("Color is Required"),
+          size: Yup.string().required("Please select a size"),
+        })
+      )
+      .min(1, "You need at least one Color")
+      .required("Required"),
+  });
 
-          <form className="w-full flex flex-col items-center justify-center">
-            {formData.thumbnail && (
+  const form = (initialState, validator) => {
+    return (
+      <Formik
+        initialValues={initialState}
+        validationSchema={validator}
+        onSubmit={handleSubmit}
+      >
+        {({ values, setFieldValue, errors }) => (
+          <Form className="md:w-1/2 w-auto flex flex-col items-center justify-center rounded-lg bg-white p-8 shadow-md">
+            {values?.id ? (
+              <h1 className="mb-4 text-2xl font-bold">Edit Product</h1>
+            ) : (
+              <h1 className="mb-4 text-2xl font-bold">Add Product</h1>
+            )}
+            {values?.thumbnail && (
               <img
                 className="h-6/12 w-6/12 border-[6px] border-white bg-white"
-                src={formData.thumbnail}
+                src={values.thumbnail}
                 alt="Selected"
                 style={{ maxWidth: "300px" }}
               />
             )}
             <div className="grid grid-cols-1 gap-2 w-full lg:grid-cols-2 mb-2">
-              <input
-                className="w-full rounded-md bg-slate-300 p-2"
-                type="text"
-                placeholder="Title"
-                value={formData.title}
-                onChange={(e) => handleChange("title", e.target.value)}
-                required
-              />
-              <input
-                type="text"
-                className="w-full rounded-md bg-slate-300 p-2"
-                value={formData.brand}
-                onChange={(e) => handleChange("brand", e.target.value)}
-                placeholder="Brand"
-                required
-              ></input>
+              <div>
+                <Field
+                  name={"title"}
+                  placeholder="Title"
+                  type={"text"}
+                  className="w-full rounded-md bg-slate-300 p-2"
+                />
+                <ErrorMessage
+                  className="text-red-500"
+                  name="title"
+                  component={"div"}
+                />
+              </div>
+              <div>
+                <Field
+                  name={"brand"}
+                  type="brand"
+                  placeholder={"brand"}
+                  className="w-full rounded-md bg-slate-300 p-2"
+                />
+                <ErrorMessage
+                  className="text-red-500"
+                  name="brand"
+                  component={"div"}
+                />
+              </div>
             </div>
-            <textarea
-              className="mb-4 w-full rounded-md bg-slate-300 p-2"
-              value={formData.description}
-              onChange={(e) => handleChange("description", e.target.value)}
-              placeholder="Description"
-              required
-            ></textarea>
+
+            <Field
+              name={"description"}
+              type="brand"
+              as="textarea"
+              placeholder={"description"}
+              className="w-full rounded-md bg-slate-300 p-2 mb-2"
+            />
+            <ErrorMessage
+              className="text-red-500"
+              name="description"
+              component={"div"}
+            />
 
             <div className="grid grid-cols-1 gap-2 w-full lg:grid-cols-2">
-              <select
-                className="mb-4 w-full rounded-md bg-slate-300 p-2"
-                id="category"
-                value={formData.category}
-                onChange={(e) => handleChange("category", e.target.value)}
-                required
-              >
-                <option value="">Select a category</option>
-                {category.categories.map((category, index) => {
-                  return (
-                    <option
-                      className="mb-4 w-full rounded-md bg-slate-300 p-2"
-                      value={`${category}`}
-                      key={index}
-                    >
-                      {category}
-                    </option>
-                  );
-                })}
-              </select>
-              <input
-                type="file"
-                className="mb-4 w-full rounded-md bg-slate-300 p-2"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
+              <div>
+                <Field
+                  name="thumbnail"
+                  type="file"
+                  className="mb-2 w-full rounded-md bg-slate-300 p-1 mr-2 h-auto"
+                  accept="image/*"
+                  value=""
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      setFieldValue("thumbnail", URL.createObjectURL(file));
+                    }
+                  }}
+                />
+                <ErrorMessage
+                  className="text-red-500"
+                  name="thumbnail"
+                  component={"div"}
+                />
+              </div>
+              <div className="flex flex-col">
+                <Field
+                  name="category"
+                  as="select"
+                  className="rounded-md border border-gray-300 shadow-sm pr-10 pl-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none bg-[linear-gradient(45deg,transparent_50%,gray_50%),linear-gradient(135deg,gray_50%,transparent_50%),linear-gradient(to_right,#ccc,#ccc)] bg-[calc(100%_-_20px)_calc(1em_+_2px),calc(100%_-_15px)_calc(1em_+_2px),calc(100%_-_2.5em)_0.5em] bg-[5px_5px,5px_5px,1px_1.5em] bg-no-repeat appearance-none mb-2 rounded-md bg-slate-300"
+                >
+                  <option value="">Select a category</option>
+                  {category.categories.map((category, index) => {
+                    return (
+                      <option
+                        className="mb-4 w-full rounded-md bg-slate-300 p-2"
+                        value={`${category}`}
+                        key={index}
+                      >
+                        {category}
+                      </option>
+                    );
+                  })}
+                </Field>
+                <ErrorMessage
+                  className="text-red-500"
+                  name="category"
+                  component={"div"}
+                />
+              </div>
             </div>
-            <Suspense fallback={<div>Loading...</div>}>
-              {formData?.sizeData ? (
-                <SizeVariation
-                  handleSizeChange={handleVariationChange}
-                  sizeData={formData.sizeData}
-                  handleSizeLength={handleVaritaionLength}
-                />
-              ) : (
-                <div className="grid grid-cols-1 gap-2 w-full lg:grid-cols-2">
-                  <input
-                    type="text"
-                    className="w-full rounded-md bg-slate-300 p-2"
-                    placeholder="Price"
-                    value={formData.price}
-                    onChange={(e) => handleChange("price", e.target.value)}
-                    required
-                  ></input>
-
-                  <input
-                    type="text"
-                    className="w-full rounded-md bg-slate-300 p-2"
-                    placeholder="Stock"
-                    value={formData.stock}
-                    onChange={(e) => handleChange("stock", e.target.value)}
-                    required
-                  ></input>
-                  <br />
-                </div>
-              )}
-            </Suspense>
-
-            <Suspense fallback={<div>Loading...</div>}>
-              {formData?.colors && (
-                <ColorVariation
-                  sizeData={formData.sizeData}
-                  handleColorChange={handleVariationChange}
-                  colors={formData.colors}
-                  handleColorLength={handleVaritaionLength}
-                />
-              )}
-            </Suspense>
-
-            {formData?.id ? (
-              <button
-                className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
-                type="button"
-                onClick={handleSubmit}
-              >
-                Edit Product
-              </button>
+            {values?.sizeData ? (
+              <>
+                <SizeVariation values={values} errors={errors.sizeData} />
+                <ColorVariation values={values} errors={errors.colors} />
+              </>
             ) : (
-              <button
-                className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
-                type="button"
-                onClick={handleSubmit}
-              >
-                Add Product
-              </button>
+              <div className="grid grid-cols-1 gap-2 w-full lg:grid-cols-2 mb-2">
+                <div>
+                  <Field
+                    name="price"
+                    type="number"
+                    className="w-full rounded-md bg-slate-300 p-2"
+                  />
+                  <ErrorMessage
+                    className="text-red-500"
+                    name="price"
+                    component={"div"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    name="stock"
+                    type="number"
+                    className="w-full rounded-md bg-slate-300 p-2"
+                  />
+                  <ErrorMessage
+                    className="text-red-500"
+                    name="stock"
+                    component={"div"}
+                  />
+                </div>
+              </div>
             )}
-          </form>
-          <p className="mt-4">
-            <Link to="/Home" className=" text-blue-500 underline">
-              ALL
-            </Link>
-          </p>
-        </div>
+            <button
+              className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
+              type="submit"
+            >
+              {values.id ? "Edit Product" : "Add Product"}
+            </button>
+            <p className="mt-4">
+              <Link to="/Home" className=" text-blue-500 underline">
+                ALL
+              </Link>
+            </p>
+          </Form>
+        )}
+      </Formik>
+    );
+  };
+
+  return (
+    <>
+      <div className="flex h-auto items-center justify-center">
+        {location?.state?.product &&
+          form(
+            location?.state?.product,
+            location?.state?.product.id > 100
+              ? validatorForNew
+              : validatorForAPI
+          )}
+        {!location?.state?.product && form(initialData, validatorForNew)}
       </div>
     </>
   );

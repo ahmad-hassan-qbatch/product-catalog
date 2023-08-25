@@ -1,13 +1,19 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteProduct } from "../../redux/Products/actionCreator";
 import { useNavigate } from "react-router-dom";
 import DeleteDialog from "../DeleteDialog";
+import "../../App.css";
+import { groupBy } from "lodash";
+
+import { EditOutlined, DeleteOutlined, StarFilled } from "@ant-design/icons";
 
 const ProductCard = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(0);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
+
+  const [colors, setColors] = useState(undefined);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -16,36 +22,33 @@ const ProductCard = ({ product }) => {
     setIsDialogVisible(false);
   };
 
+  useEffect(() => {
+    if (product.colors) {
+      setColors(groupBy(product.colors, "size"));
+    }
+  }, [product.colors]);
   return (
     <>
-      <div className="w-auto max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-        <div>
-          {isDialogVisible && (
-            <DeleteDialog
-              handleDelete={handleDelete}
-              id={product.id}
-              setIsDialogVisible={setIsDialogVisible}
-            />
-          )}
-        </div>
+      {/* w-auto h-auto max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 flex justify-center */}
+      <div className="relative bg-white border border-gray-200 rounded-lg shadow flex justify-center h-[390px]">
         <img
-          className="w-full h-64"
           src={product.thumbnail}
-          alt="Product Image"
+          className="object-cover h-48 w-96 rounded-lg"
         />
-
-        <div className="px-5 pb-5">
-          <div>
-            <p className="text-xl font-bold text-gray-900 dark:text-white overflow-hidden whitespace-nowrap overflow-ellipsis">
+        <div className="absolute top-40 w-11/12">
+          <div className="px-5 py-3 bg-white border border-gray-200 rounded-lg bg-opacity-70">
+            <p className="text-xl font-bold text-gray-900 dark:text-white overflow-hidden whitespace-nowrap overflow-ellipsis w-auto">
               {product.title}
             </p>
-            <div className="lg:flex justify-between">
+            <p className="text-md text-gray-500 dark:text-white overflow-hidden whitespace-nowrap overflow-ellipsis">
+              {product.category}
+            </p>
+            <div className="flex justify-between">
               <p className="text-gray-600 dark:text-gray-300">
-                Price:{" "}
+                Price: $
                 {product.sizeData
                   ? product.sizeData[selectedSize].price
                   : product.price}
-                $
               </p>
               <p
                 className={`${
@@ -67,46 +70,98 @@ const ProductCard = ({ product }) => {
                   : "Out of Stock"}
               </p>
             </div>
-            {product?.sizeData && product?.sizeData.length !== 1
-              ? product.sizeData.map((size, index) => {
+
+            {/* Displaying Rating if any otherwise Not Available*/}
+            {product.rating ? (
+              <div className="flex items-center h-7">
+                <StarFilled className="w-4 h-4 text-yellow-300 mr-1" />
+                <span className="text-md font-semibold tracking-tight text-gray-900 dark:text-white">
+                  {product.rating}
+                </span>
+              </div>
+            ) : (
+              <button className="border text-sm border-0 border-black h-7">
+                Rating Not Available
+              </button>
+            )}
+            {/* Displaying Sizes If any other wise Not Available */}
+            <div className="flex overflow-x-auto items-center h-7">
+              {product?.sizeData ? (
+                product.sizeData.map((size, index) => {
                   return (
-                    <div key={`${product.id}${index}`}>
-                      <button
-                        onClick={() => {
-                          setSelectedSize(index);
-                        }}
-                      >
-                        {size.name}
-                      </button>
-                    </div>
+                    <button
+                      key={`${product.id}${index}`}
+                      className={`px-4 rounded-md hover:bg-gray-300 mr-4 h-7 ${
+                        selectedSize === index
+                          ? "bg-gray-800 text-white"
+                          : "bg-gray-200"
+                      }`}
+                      onClick={() => {
+                        setSelectedSize(index);
+                      }}
+                    >
+                      {size.name}
+                    </button>
                   );
                 })
-              : undefined}
-            {product.rating ? (
-              <span className="text-md font-semibold tracking-tight text-gray-900 dark:text-white">
-                {product.rating}
-              </span>
-            ) : (
-              <br />
-            )}
-          </div>
-          <div className="mt-3 flex justify-between">
-            <button
-              onClick={() => setIsDialogVisible(true)}
-              className="border border-black text-red-600 hover:text-red-800 cursor-pointer rounded-lg px-2 py-1 dark:bg-gray-700 dark:text-white"
-            >
-              Delete
-            </button>
+              ) : (
+                <button className="border text-sm border-0 border-black mr-3">
+                  Size Not Available
+                </button>
+              )}
+            </div>
 
-            <button
-              onClick={() => {
-                navigate("/edit", { state: { product: product } });
-              }}
-              className="w-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              Edit Details
-            </button>
+            {/* Displaying Color by selected size If any other wise Not Available */}
+            <div className="flex overflow-x-auto h-7 items-center">
+              {colors ? (
+                colors[product?.sizeData[selectedSize]?.name]?.map(
+                  (color, index) => {
+                    return (
+                      <span
+                        key={`${product.id}${index}`}
+                        className={`border border-2 rounded-full border-transparent mr-3 p-2`}
+                        style={{ backgroundColor: color.hex }}
+                        onClick={() => {}}
+                      ></span>
+                    );
+                  }
+                )
+              ) : (
+                <button className="border text-sm border-0 border-black mr-3">
+                  Colors Not Available
+                </button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => setIsDialogVisible(true)}
+                className={`flex items-center justify-center w-3/4 px-4 py-2 text-white bg-gradient-to-r to-red-400 from-red-600 hover:bg-red-600 focus:outline-none border border-transparent rounded-md transition duration-300 ease-in-out hover:scale-110`}
+              >
+                <DeleteOutlined className="mr-2" />
+                Delete
+              </button>
+
+              <button
+                onClick={() => {
+                  navigate("/edit", { state: { product: product } });
+                }}
+                className="flex items-center justify-center w-auto text-white hover:bg-blue-800 bg-gradient-to-r from-purple-600 to-blue-600  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-300 ease-in-out hover:scale-110"
+              >
+                Edit <EditOutlined className="ml-2" />
+              </button>
+            </div>
           </div>
+        </div>
+
+        <div className="z-10">
+          {isDialogVisible && (
+            <DeleteDialog
+              handleDelete={handleDelete}
+              id={product.id}
+              setIsDialogVisible={setIsDialogVisible}
+            />
+          )}
         </div>
       </div>
     </>

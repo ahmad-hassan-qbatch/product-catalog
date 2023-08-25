@@ -1,48 +1,43 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 
-const CategorySlider = ({
-  categories,
-  handleCategoryClick,
-  setSelectedCategory,
-  selectedCategory,
-}) => {
+import "../App.css";
+import { useNavigate } from "react-router-dom";
+
+const CategorySlider = ({ categories, selectedCategory }) => {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (category) => {
+    if (category) navigate(`/home?category=${category}`);
+    else navigate(`/home`);
+  };
   return (
-    <div className="flex overflow-x-auto whitespace-nowrap p-4 no-scrollbar">
-      <div
-        className="w-full inline-flex mr-4 my-4"
+    <div className="flex overflow-x-auto whitespace-nowrap p-4 mt-10">
+      <button
         onClick={() => {
-          handleCategoryClick(null);
-          setSelectedCategory(null);
+          handleCategoryClick("");
         }}
+        className={`px-4 rounded-md shadow-md hover:bg-gray-300 mr-4 h-10 ${
+          selectedCategory === "" ? "bg-gray-800 text-white" : "bg-gray-200"
+        }`}
       >
-        <div
-          className={`p-4 rounded-md shadow-md hover:bg-gray-300 ${
-            selectedCategory === null ? "bg-gray-800 text-white" : "bg-gray-200"
-          }`}
-        >
-          All
-        </div>
-      </div>
+        All
+      </button>
+
       {categories.map((category, index) => (
-        <div
+        <button
           key={index}
-          className="w-full inline-flex mr-4 my-4"
           onClick={() => {
             handleCategoryClick(category);
-            setSelectedCategory(category);
           }}
+          className={`px-4 rounded-md h-10 shadow-md hover:bg-gray-300 mr-4 ${
+            selectedCategory === category
+              ? "bg-gray-800 text-white"
+              : "bg-gray-200"
+          }`}
         >
-          <div
-            className={`p-4 rounded-md shadow-md hover:bg-gray-300 ${
-              selectedCategory === category
-                ? "bg-gray-800 text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            {category}
-          </div>
-        </div>
+          {category}
+        </button>
       ))}
     </div>
   );

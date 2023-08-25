@@ -4,6 +4,8 @@ import "./App.css";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Root from "./Components/Root";
+import NotFound from "./Components/NotFound";
+import FormIKPractice from "./Components/FormIKPractice";
 
 const ProductForm = React.lazy(() =>
   /* webpackChunkName: "productForm" */ import("./Components/ProductForm")
@@ -21,7 +23,9 @@ function App() {
             <Route exact path="/" element={<Root />}>
               <Route exact path="/home" element={<AllProduct />} />
               <Route path="/add" element={<ProductForm />} />
+              <Route path="/formik" element={<FormIKPractice />} />
               <Route path="/edit" element={<ProductForm />} />
+              <Route path="/*" element={<NotFound />} />
             </Route>
           </Routes>
         </Suspense>

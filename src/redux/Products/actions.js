@@ -80,7 +80,7 @@ const actions = {
   searchProductSuccess: (data) => {
     return {
       type: actions.SEARCH_PRODUCT_SUCCESS,
-      payload: { products: data },
+      payload: data,
     };
   },
 

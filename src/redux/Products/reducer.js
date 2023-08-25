@@ -14,7 +14,7 @@ export default (state = initialState, { type, payload }) => {
   let newAdded;
   switch (type) {
     case actions.FETCH_PRODUCTS_BEGIN:
-      return { ...state, loading: true, error: null };
+      return { ...state, loading: true, success: null, error: null };
 
     case actions.FETCH_PRODUCTS_SUCCESS:
       newAdded = _.takeWhile(state.products, (product) => product.id > 100);
@@ -27,7 +27,7 @@ export default (state = initialState, { type, payload }) => {
       };
 
     case actions.FETCH_PRODUCTS_BY_CATEGORY_BEGIN:
-      return { ...state, loading: true };
+      return { ...state, success: null, loading: true };
 
     case actions.FETCH_PRODUCTS_BY_CATEGORY_SUCCESS:
       newAdded = _.takeWhile(state.products, (product) => product.id > 100);
@@ -40,20 +40,14 @@ export default (state = initialState, { type, payload }) => {
       };
 
     case actions.SEARCH_PRODUCT_BEGIN:
-      return { ...state, loading: true };
+      return { ...state, success: null, loading: true };
 
     case actions.SEARCH_PRODUCT_SUCCESS:
-      if (payload.products.length === 0) {
-        return {
-          ...state,
-          loading: false,
-          error: null,
-        };
-      }
       return {
         ...state,
         loading: false,
         error: null,
+        total: payload.total,
         products: _.unionBy(
           _.takeWhile(state.products, (product) => product.id > 100),
           payload.products,
@@ -65,6 +59,7 @@ export default (state = initialState, { type, payload }) => {
       return {
         ...state,
         loading: true,
+        success: null,
         error: null,
       };
 
@@ -73,6 +68,7 @@ export default (state = initialState, { type, payload }) => {
         ...state,
         loading: false,
         error: null,
+        success: "Product Added",
         total: state.total + 1,
         products: [
           { ...payload.newProduct, id: ++latestId },
@@ -81,12 +77,13 @@ export default (state = initialState, { type, payload }) => {
       };
 
     case actions.EDIT_PRODUCT_BEGIN:
-      return { ...state, loading: true };
+      return { ...state, success: null, loading: true };
 
     case actions.EDIT_PRODUCT_SUCCESS:
       return {
         ...state,
         loading: false,
+        success: "Product Edited",
         error: null,
         products: _.map(state.products, (product) =>
           product.id === payload.product.id ? payload.product : product
@@ -94,7 +91,7 @@ export default (state = initialState, { type, payload }) => {
       };
 
     case actions.DELETE_PRODUCT_BEGIN:
-      return { ...state, loading: true };
+      return { ...state, success: null, loading: true };
 
     case actions.DELETE_PRODUCT_SUCCESS:
       return {
@@ -102,6 +99,7 @@ export default (state = initialState, { type, payload }) => {
         products: state.products.filter(
           (product) => product.id !== payload.productId
         ),
+        success: "Product Deleted",
         total: state.total - 1,
         loading: false,
         error: null,
@@ -111,7 +109,7 @@ export default (state = initialState, { type, payload }) => {
       return {
         ...state,
         loading: false,
-        error: `"Error ${payload.error.name}.\\n${payload.error.message}"}`,
+        error: `${payload.error}`,
       };
     default:
       return state;

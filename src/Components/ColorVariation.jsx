@@ -1,114 +1,90 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from "react";
-import { ChromePicker } from "react-color";
-import _ from "lodash";
+import React from "react";
+import ColorPicker from "./ColorPicker";
 import "../App.css";
-const ColorVariation = ({
-  handleColorChange,
-  colors,
-  handleColorLength,
-  sizeData,
-}) => {
-  const [showColorPicker, setShowColorPicker] = useState([false]);
+import { FieldArray, Field, ErrorMessage } from "formik";
 
-  const handleToggleColorPicker = (i) => {
-    setShowColorPicker((prevState) =>
-      prevState.map((colorCheck, index) =>
-        i === index ? !colorCheck : colorCheck
-      )
-    );
-  };
-
-  useEffect(() => {
-    setShowColorPicker([...showColorPicker, false]);
-  }, [colors]);
+const ColorVariation = ({ values }) => {
   return (
     <div className="w-full mb-2">
-      <h1>Colors</h1>
-      {colors.map((color, index) => (
-        <div key={index} className="grid grid-cols-1 gap-2 lg:grid-cols-2">
-          <div>
-            <input
-              className="w-full rounded-md bg-slate-300 p-2 float-right"
-              type="text"
-              value={color.hex}
-              onChange={(e) =>
-                handleColorChange("colors", index, "hex", e.target.value)
-              }
-              placeholder="Color"
-              required
-            />
-          </div>
-          <select
-            className="mb-4 w-full rounded-md bg-slate-300 p-2"
-            value={sizeData[color.size]?.name}
-            onChange={(e) => {
-              const id =
-                _.findIndex(
-                  e.target,
-                  (option) => option.value === e.target.value
-                ) - 1;
+      <label>Colors</label>
+      <FieldArray name="colors">
+        {(arrayHelpers) => (
+          <>
+            {values.colors.map((_, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-1 gap-2 mb-2 lg:grid-cols-2 lg:mb-2"
+              >
+                <div>
+                  <Field
+                    name={`colors[${index}].hex`}
+                    placeholder="Color"
+                    className="w-full rounded-md bg-slate-300 p-2"
+                  />
+                  <ErrorMessage
+                    className="text-red-500"
+                    name={`colors[${index}].hex`}
+                    component={"div"}
+                  />
+                </div>
 
-              handleColorChange("colors", index, "size", id);
-            }}
-            required
-          >
-            <option value="">Select a Size</option>
-            {sizeData.map((size, index) => {
-              return (
-                <option
-                  className="mb-4 w-full rounded-md bg-slate-300 p-2"
-                  value={`${size.name}`}
-                  key={index}
-                >
-                  {size.name}
-                </option>
-              );
-            })}
-          </select>
-          <div>
-            <p
-              className="bg-blue-500 text-white px-4 py-2 rounded float-left"
-              onClick={() => handleToggleColorPicker(index)}
-            >
-              Choose Color
-            </p>
-
-            {showColorPicker[index] && (
-              <div className="w-2">
-                <ChromePicker
-                  color={color.hex}
-                  onChange={(e) => {
-                    handleColorChange("colors", index, "hex", e.hex);
-                  }}
-                  className="rounded-lg shadow-md"
-                />
+                <div className="flex flex-col">
+                  <Field
+                    name={`colors[${index}].size`}
+                    as="select"
+                    className="rounded-md border border-gray-300 shadow-sm pr-10 pl-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none bg-[linear-gradient(45deg,transparent_50%,gray_50%),linear-gradient(135deg,gray_50%,transparent_50%),linear-gradient(to_right,#ccc,#ccc)] bg-[calc(100%_-_20px)_calc(1em_+_2px),calc(100%_-_15px)_calc(1em_+_2px),calc(100%_-_2.5em)_0.5em] bg-[5px_5px,5px_5px,1px_1.5em] bg-no-repeat appearance-none mb-2 rounded-md bg-slate-300"
+                  >
+                    <option value="">Select a Size</option>
+                    {values.sizeData.map((size, index) => {
+                      return (
+                        <option
+                          className="mb-4 w-full rounded-md bg-slate-300 p-2"
+                          value={`${size.name}`}
+                          key={index}
+                        >
+                          {size.name}
+                        </option>
+                      );
+                    })}
+                  </Field>
+                  <ErrorMessage
+                    className="text-red-500"
+                    name={`colors[${index}].size`}
+                    component={"div"}
+                  />
+                </div>
+                <Field name={`colors[${index}].hex`} component={ColorPicker} />
+                <hr className="lg:invisible" />
+                <hr className="lg:invisible" />
               </div>
-            )}
-          </div>
-          <hr className="lg:invisible" />
-          <hr className="lg:invisible" />
-        </div>
-      ))}
-      <div className="flex justify-between">
-        <button
-          className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600 lg:w-1/4"
-          type="button"
-          onClick={() =>
-            handleColorLength("ADD_VARIATION_INPUT", "colors", { hex: "" })
-          }
-        >
-          Add Color
-        </button>
+            ))}
+            <div className="flex justify-between">
+              <button
+                className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600 lg:w-1/4"
+                type="button"
+                onClick={() => {
+                  arrayHelpers.push({ hex: "", size: "" });
+                }}
+              >
+                Add Color
+              </button>
 
-        <button
-          type="button"
-          className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600 lg:w-1/4"
-          onClick={() => handleColorLength("DELETE_VARIATION_INPUT", "colors")}
-        >
-          Remove Color
-        </button>
-      </div>
+              <button
+                type="button"
+                className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600 lg:w-1/4"
+                onClick={() =>
+                  values.colors.length > 1
+                    ? arrayHelpers.remove(values.colors.length - 1)
+                    : null
+                }
+              >
+                Remove Color
+              </button>
+            </div>
+          </>
+        )}
+      </FieldArray>
     </div>
   );
 };
