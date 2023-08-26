@@ -3,6 +3,7 @@ import React from "react";
 
 import "../App.css";
 import { useNavigate } from "react-router-dom";
+import Button from "./Button";
 
 const CategorySlider = ({ categories, selectedCategory }) => {
   const navigate = useNavigate();
@@ -10,21 +11,21 @@ const CategorySlider = ({ categories, selectedCategory }) => {
   const handleCategoryClick = (category) => {
     category ? navigate(`/?category=${category}`) : navigate(`/`);
   };
+  console.log(categories);
   return (
     <div className="flex overflow-x-auto whitespace-nowrap p-4 mt-10">
-      <button
+      <Button
         onClick={() => {
           handleCategoryClick("");
         }}
         className={`px-4 rounded-md shadow-md hover:bg-gray-300 mr-4 h-10 ${
           selectedCategory === "" ? "bg-gray-800 text-white" : "bg-gray-200"
         }`}
-      >
-        All
-      </button>
+        label="All"
+      />
 
       {categories.map((category, index) => (
-        <button
+        <Button
           key={index}
           onClick={() => {
             handleCategoryClick(category);
@@ -34,9 +35,8 @@ const CategorySlider = ({ categories, selectedCategory }) => {
               ? "bg-gray-800 text-white"
               : "bg-gray-200"
           }`}
-        >
-          {category}
-        </button>
+          label={category}
+        />
       ))}
     </div>
   );

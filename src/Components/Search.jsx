@@ -5,6 +5,7 @@ import "../App.css";
 import { debounce } from "lodash";
 import { SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import Button from "./Button";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -33,12 +34,12 @@ const Search = () => {
           placeholder="Search Mockups, Logos..."
           required
         />
-        <button
+
+        <Button
           onClick={handleSearch}
           className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
-        >
-          Search
-        </button>
+          label="Search"
+        />
       </div>
     </div>
   );

@@ -2,6 +2,8 @@
 import React from "react";
 import "../App.css";
 import { FieldArray, Field, ErrorMessage } from "formik";
+import Button from "./Button";
+
 const SizeVariation = ({ values }) => {
   return (
     <div className="w-full mb-2">
@@ -26,6 +28,7 @@ const SizeVariation = ({ values }) => {
                     component={"div"}
                   />
                 </div>
+
                 <div>
                   <Field
                     name={`sizeData[${index}].stock`}
@@ -39,6 +42,7 @@ const SizeVariation = ({ values }) => {
                     component={"div"}
                   />
                 </div>
+
                 <div>
                   <Field
                     name={`sizeData[${index}].price`}
@@ -58,7 +62,7 @@ const SizeVariation = ({ values }) => {
               </div>
             ))}
             <div className="flex justify-between">
-              <button
+              <Button
                 className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600 lg:w-1/4"
                 type="button"
                 onClick={() =>
@@ -68,11 +72,10 @@ const SizeVariation = ({ values }) => {
                     name: "",
                   })
                 }
-              >
-                Add Size
-              </button>
+                label="Add Size"
+              />
 
-              <button
+              <Button
                 type="button"
                 className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600 lg:w-1/4"
                 onClick={() =>
@@ -80,9 +83,8 @@ const SizeVariation = ({ values }) => {
                     ? arrayHelpers.remove(values.sizeData.length - 1)
                     : null
                 }
-              >
-                Remove Size
-              </button>
+                label="Remove Size"
+              />
             </div>
           </>
         )}

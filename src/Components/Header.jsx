@@ -5,8 +5,9 @@ import { PlusOutlined } from "@ant-design/icons";
 import Search from "./Search";
 
 import "../App.css";
+import Button from "./Button";
 
-const NavBar = () => {
+const Header = () => {
   const navigate = useNavigate();
 
   return (
@@ -22,15 +23,14 @@ const NavBar = () => {
           <div className="w-screen text-center m-2">
             <Search />
           </div>
-          <div
+          <Button
             onClick={() => {
               navigate("/add", { state: { product: undefined } });
             }}
-            className="text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md whitespace-nowrap flex items-center md:visible"
-          >
-            <span>Add Product</span>
-            <PlusOutlined />
-          </div>
+            className="justify-center text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md whitespace-nowrap flex items-center m-2"
+            rightChildern={<PlusOutlined className="ml-2" />}
+            label="Add Product"
+          />
         </div>
       </div>
       <div className="bg-gray-800 visible static md:invisible md:fixed md:top-0 p-2">
@@ -39,24 +39,23 @@ const NavBar = () => {
         </div>
         <div className="grid gap-8 grid-cols-2 ">
           <NavLink
-            to={"/"}
+            to="/"
             className="text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 flex justify-center items-center rounded-md m-2"
           >
             Home
           </NavLink>
-          <div
+          <Button
             onClick={() => {
               navigate("/add", { state: { product: undefined } });
             }}
             className="justify-center text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md whitespace-nowrap flex items-center m-2"
-          >
-            <span className="mr-2">Add Product</span>
-            <PlusOutlined />
-          </div>
+            rightChildern={<PlusOutlined />}
+            label="Add Product"
+          />
         </div>
       </div>
     </>
   );
 };
 
-export default NavBar;
+export default Header;

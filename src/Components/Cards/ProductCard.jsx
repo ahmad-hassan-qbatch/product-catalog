@@ -8,6 +8,9 @@ import "../../App.css";
 import { groupBy } from "lodash";
 
 import { EditOutlined, DeleteOutlined, StarFilled } from "@ant-design/icons";
+import Colors from "./Colors";
+import Sizes from "./Sizes";
+import Button from "../Button";
 
 const ProductCard = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(0);
@@ -37,9 +40,11 @@ const ProductCard = ({ product }) => {
             <p className="text-xl font-bold text-gray-900  overflow-hidden whitespace-nowrap overflow-ellipsis w-auto">
               {product.title}
             </p>
+
             <p className="text-md text-gray-500 overflow-hidden whitespace-nowrap overflow-ellipsis">
               {product.category}
             </p>
+
             <div className="flex justify-between">
               <p className="text-gray-600">
                 Price: $
@@ -77,74 +82,55 @@ const ProductCard = ({ product }) => {
                 </span>
               </div>
             ) : (
-              <button className="text-sm h-7">Rating Not Available</button>
+              <Button className="text-sm h-7" label="Rating Not Available" />
             )}
+
             {/* Displaying Sizes If any other wise Not Available */}
             <div className="flex overflow-x-auto items-center h-7">
               {product?.sizeData ? (
-                product.sizeData.map((size, index) => {
-                  return (
-                    <button
-                      key={`${product.id}${index}`}
-                      className={`px-4 rounded-md hover:bg-gray-300 mr-4 h-7 ${
-                        selectedSize === index
-                          ? "bg-gray-800 text-white"
-                          : "bg-gray-200"
-                      }`}
-                      onClick={() => {
-                        setSelectedSize(index);
-                      }}
-                    >
-                      {size.name}
-                    </button>
-                  );
-                })
+                <Sizes
+                  sizes={product?.sizeData}
+                  selectedSize={selectedSize}
+                  setSelectedSize={setSelectedSize}
+                />
               ) : (
-                <button className="text-sm border-0 border-black mr-3">
-                  Size Not Available
-                </button>
+                <Button
+                  className="text-sm border-0 border-black mr-3"
+                  label="Size Not Available"
+                />
               )}
             </div>
 
             {/* Displaying Color by selected size If any other wise Not Available */}
             <div className="flex overflow-x-auto h-7 items-center">
               {product.colors && colors ? (
-                colors[product?.sizeData[selectedSize]?.name]?.map(
-                  (color, index) => {
-                    return (
-                      <span
-                        key={`${product.id}${index}`}
-                        className={`border-2 rounded-full border-transparent mr-3 p-2`}
-                        style={{ backgroundColor: color.hex }}
-                        onClick={() => {}}
-                      ></span>
-                    );
-                  }
-                )
+                <Colors
+                  colors={colors[product?.sizeData[selectedSize]?.name]}
+                />
               ) : (
-                <button className="text-sm border-0 border-black mr-3">
-                  Colors Not Available
-                </button>
+                <Button
+                  className="text-sm border-0 border-black mr-3"
+                  label="Colors Not Available"
+                />
               )}
             </div>
 
             <div className="grid grid-cols-2 gap-2">
-              <button
+              <Button
                 onClick={() => setIsDialogVisible(true)}
                 className={`flex items-center justify-center w-3/4 px-4 py-2 text-white bg-gradient-to-r to-red-400 from-red-600 hover:bg-red-600 focus:outline-none border border-transparent rounded-md transition duration-300 ease-in-out hover:scale-110`}
-              >
-                <DeleteOutlined className="mr-2" />
-                Delete
-              </button>
+                label="Delete"
+                leftChildern={<DeleteOutlined className="mr-2" />}
+              />
 
-              <button
+              <Button
                 onClick={() => {
                   navigate("/edit", { state: { product: product } });
                 }}
                 className="flex items-center justify-center w-auto text-white hover:bg-blue-800 bg-gradient-to-r from-purple-600 to-blue-600  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition duration-300 ease-in-out hover:scale-110"
-              >
-                Edit <EditOutlined className="ml-2" />
-              </button>
+                label="Edit"
+                rightChildern={<EditOutlined className="ml-2" />}
+              />
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import React from "react";
 import ColorPicker from "./ColorPicker";
 import "../App.css";
 import { FieldArray, Field, ErrorMessage } from "formik";
+import Button from "./Button";
 
 const ColorVariation = ({ values }) => {
   return (
@@ -54,23 +55,22 @@ const ColorVariation = ({ values }) => {
                     component={"div"}
                   />
                 </div>
+
                 <Field name={`colors[${index}].hex`} component={ColorPicker} />
                 <hr className="lg:invisible" />
                 <hr className="lg:invisible" />
               </div>
             ))}
             <div className="flex justify-between">
-              <button
+              <Button
                 className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600 lg:w-1/4"
                 type="button"
                 onClick={() => {
                   arrayHelpers.push({ hex: "", size: "" });
                 }}
-              >
-                Add Color
-              </button>
-
-              <button
+                label="Add Color"
+              />
+              <Button
                 type="button"
                 className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600 lg:w-1/4"
                 onClick={() =>
@@ -78,9 +78,8 @@ const ColorVariation = ({ values }) => {
                     ? arrayHelpers.remove(values.colors.length - 1)
                     : null
                 }
-              >
-                Remove Color
-              </button>
+                label="Remove Color"
+              />
             </div>
           </>
         )}

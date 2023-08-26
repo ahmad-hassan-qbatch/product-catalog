@@ -1,39 +1,33 @@
-import React, { Suspense } from "react";
+import React from "react";
 import store from "./redux/store";
 import "./App.css";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Root from "./Components/Root";
+import Layout from "./Components/Layout";
 import NotFound from "./Components/NotFound";
-import Loader from "./Components/Loader";
+import LazyLoading from "./Components/LazyLoading";
 
 const ProductForm = React.lazy(() =>
-  /* webpackChunkName: "productForm" */ import("./Components/ProductForm")
+  import(/* webpackChunkName: "productForm" */ "./pages/ProductForm")
 );
 const AllProduct = React.lazy(() =>
-  /* webpackChunkName: "allProducts" */ import("./Components/AllProducts")
+  import(/* webpackChunkName: "allProducts" */ "./pages/AllProducts")
 );
 
 function App() {
   return (
     <BrowserRouter>
       <Provider store={store}>
-        <Suspense
-          fallback={
-            <div className="flex flex-col items-center justify-center h-screen ">
-              <Loader />
-            </div>
-          }
-        >
-          <Routes>
-            <Route exact path="/" element={<Root />}>
+        <LazyLoading>
+          <Layout>
+            <Routes>
               <Route exact path="/" element={<AllProduct />} />
               <Route path="/add" element={<ProductForm />} />
               <Route path="/edit" element={<ProductForm />} />
               <Route path="/*" element={<NotFound />} />
-            </Route>
-          </Routes>
-        </Suspense>
+            </Routes>
+          </Layout>
+        </LazyLoading>
       </Provider>
     </BrowserRouter>
   );

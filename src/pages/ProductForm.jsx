@@ -4,12 +4,15 @@ import { fetchAllCategory } from "../redux/Categories/actionCreator";
 import { addProduct, editProduct } from "../redux/Products/actionCreator";
 import "../App.css";
 import * as Yup from "yup";
+import Button from "../Components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import ColorVariation from "./ColorVariation";
+import ColorVariation from "../Components/ColorVariation";
 
-const SizeVariation = React.lazy(() => import("./SizeVariation"));
+const SizeVariation = React.lazy(() =>
+  import(/* webpackChunkName: "SizeVariation" */ "../Components/SizeVariation")
+);
 
 let initialData = {
   title: "",
@@ -89,6 +92,7 @@ function ProductForm() {
             ) : (
               <h1 className="mb-4 text-2xl font-bold">Add Product</h1>
             )}
+
             {values?.thumbnail && (
               <img
                 className="h-6/12 w-6/12 border-[6px] border-white bg-white"
@@ -97,6 +101,7 @@ function ProductForm() {
                 style={{ maxWidth: "300px" }}
               />
             )}
+
             <div className="grid grid-cols-1 gap-2 w-full lg:grid-cols-2 mb-2">
               <div>
                 <Field
@@ -111,6 +116,7 @@ function ProductForm() {
                   component={"div"}
                 />
               </div>
+
               <div>
                 <Field
                   name={"brand"}
@@ -159,6 +165,7 @@ function ProductForm() {
                   component={"div"}
                 />
               </div>
+
               <div className="flex flex-col">
                 <Field
                   name="category"
@@ -218,12 +225,12 @@ function ProductForm() {
                 </div>
               </div>
             )}
-            <button
+            <Button
               className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
               type="submit"
-            >
-              {values?.id ? "Edit Product" : "Add Product"}
-            </button>
+              label={values?.id ? "Edit Product" : "Add Product"}
+            />
+
             <p className="mt-4">
               <Link to="/" className=" text-blue-500 underline">
                 ALL
@@ -238,20 +245,6 @@ function ProductForm() {
   return (
     <>
       <div className="flex h-auto items-center justify-center">
-        {/* {location?.state?.product
-        
-          ? form(
-              location?.state?.product,
-              location?.state?.product.id > 100
-                ? validatorForNew
-                : validatorForAPI
-            )
-          : form(
-              location?.state?.product ?? initialData,
-              location?.state?.product.id > 100
-                ? validatorForNew
-                : validatorForAPI
-            )} */}
         {form(
           location?.state?.product ?? initialData,
           location?.state?.product && location?.state?.product?.id < 101
