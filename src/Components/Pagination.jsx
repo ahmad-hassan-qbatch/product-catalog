@@ -56,7 +56,7 @@ const Pagination = ({ totalPages, selectedPage, category, searchParam }) => {
         <div className="flex">
           <button
             onClick={() => {
-              handlePageNoClick(1);
+              totalPages && handlePageNoClick(1);
             }}
             className="flex items-center justify-center px-4 h-10 leading-none bg-white text-gray-600 border border-gray-300 rounded-l-md hover:bg-gray-100 hover:text-gray-800"
           >
@@ -79,7 +79,7 @@ const Pagination = ({ totalPages, selectedPage, category, searchParam }) => {
           </button>
           <button
             onClick={() => {
-              handlePageNoClick(totalPages);
+              totalPages && handlePageNoClick(totalPages);
             }}
             className="flex items-center justify-center px-4 h-10 leading-none bg-white text-gray-600 border border-gray-300 rounded-r-md hover:bg-gray-100 hover:text-gray-800 "
           >
