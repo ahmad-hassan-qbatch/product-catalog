@@ -42,6 +42,7 @@ const AllProducts = () => {
     success,
     loading: productLoading,
   } = useSelector((state) => state.Products);
+
   const {
     categories,
     loading: categoryLoading,
@@ -70,7 +71,7 @@ const AllProducts = () => {
   }, [pageNo, searchParam, category]);
 
   useEffect(() => {
-    productError && toast.error(productError);
+    productError && toast.error(productError) && dispatch(reset());
   }, [productError]);
 
   useEffect(() => {
