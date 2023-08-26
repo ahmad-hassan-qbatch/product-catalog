@@ -10,9 +10,9 @@ const Search = () => {
   const navigate = useNavigate();
 
   const handleSearch = () => {
-    if (searchInputRef.current.value)
-      navigate(`/home?search=${searchInputRef.current.value}`);
-    else navigate(`/home`);
+    searchInputRef.current.value
+      ? navigate(`/?search=${searchInputRef.current.value}`)
+      : navigate(`/`);
   };
 
   const handleChange = debounce(handleSearch, 1000);

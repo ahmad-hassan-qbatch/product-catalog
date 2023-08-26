@@ -25,20 +25,16 @@ function ProductForm() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const category = useSelector((state) => state.Categories);
+  const { categories } = useSelector((state) => state.Categories);
   const dispatch = useDispatch();
 
   const handleSubmit = (values) => {
-    if (!values?.id) {
-      dispatch(addProduct(values));
-    } else {
-      dispatch(editProduct(values));
-    }
-    navigate("/home");
+    !values?.id ? dispatch(addProduct(values)) : dispatch(editProduct(values));
+    navigate(-1);
   };
 
   useEffect(() => {
-    dispatch(fetchAllCategory());
+    !categories?.length && dispatch(fetchAllCategory());
   }, []);
 
   const validatorForAPI = Yup.object({
@@ -84,6 +80,7 @@ function ProductForm() {
         initialValues={initialState}
         validationSchema={validator}
         onSubmit={handleSubmit}
+        enableReinitialize={true}
       >
         {({ values, setFieldValue, errors }) => (
           <Form className="md:w-1/2 w-auto flex flex-col items-center justify-center rounded-lg bg-white p-8 shadow-md">
@@ -152,9 +149,8 @@ function ProductForm() {
                   value=""
                   onChange={(e) => {
                     const file = e.target.files[0];
-                    if (file) {
+                    file &&
                       setFieldValue("thumbnail", URL.createObjectURL(file));
-                    }
                   }}
                 />
                 <ErrorMessage
@@ -167,10 +163,10 @@ function ProductForm() {
                 <Field
                   name="category"
                   as="select"
-                  className="rounded-md border border-gray-300 shadow-sm pr-10 pl-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none bg-[linear-gradient(45deg,transparent_50%,gray_50%),linear-gradient(135deg,gray_50%,transparent_50%),linear-gradient(to_right,#ccc,#ccc)] bg-[calc(100%_-_20px)_calc(1em_+_2px),calc(100%_-_15px)_calc(1em_+_2px),calc(100%_-_2.5em)_0.5em] bg-[5px_5px,5px_5px,1px_1.5em] bg-no-repeat appearance-none mb-2 rounded-md bg-slate-300"
+                  className="border border-gray-300 shadow-sm pr-10 pl-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none bg-[linear-gradient(45deg,transparent_50%,gray_50%),linear-gradient(135deg,gray_50%,transparent_50%),linear-gradient(to_right,#ccc,#ccc)] bg-[calc(100%_-_20px)_calc(1em_+_2px),calc(100%_-_15px)_calc(1em_+_2px),calc(100%_-_2.5em)_0.5em] bg-[5px_5px,5px_5px,1px_1.5em] bg-no-repeat appearance-none mb-2 rounded-md bg-slate-300"
                 >
                   <option value="">Select a category</option>
-                  {category.categories.map((category, index) => {
+                  {categories.map((category, index) => {
                     return (
                       <option
                         className="mb-4 w-full rounded-md bg-slate-300 p-2"
@@ -226,10 +222,10 @@ function ProductForm() {
               className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
               type="submit"
             >
-              {values.id ? "Edit Product" : "Add Product"}
+              {values?.id ? "Edit Product" : "Add Product"}
             </button>
             <p className="mt-4">
-              <Link to="/Home" className=" text-blue-500 underline">
+              <Link to="/" className=" text-blue-500 underline">
                 ALL
               </Link>
             </p>
@@ -242,14 +238,26 @@ function ProductForm() {
   return (
     <>
       <div className="flex h-auto items-center justify-center">
-        {location?.state?.product &&
-          form(
-            location?.state?.product,
-            location?.state?.product.id > 100
-              ? validatorForNew
-              : validatorForAPI
-          )}
-        {!location?.state?.product && form(initialData, validatorForNew)}
+        {/* {location?.state?.product
+        
+          ? form(
+              location?.state?.product,
+              location?.state?.product.id > 100
+                ? validatorForNew
+                : validatorForAPI
+            )
+          : form(
+              location?.state?.product ?? initialData,
+              location?.state?.product.id > 100
+                ? validatorForNew
+                : validatorForAPI
+            )} */}
+        {form(
+          location?.state?.product ?? initialData,
+          location?.state?.product && location?.state?.product?.id < 101
+            ? validatorForAPI
+            : validatorForNew
+        )}
       </div>
     </>
   );

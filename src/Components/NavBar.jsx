@@ -14,7 +14,7 @@ const NavBar = () => {
       <div className="bg-gray-800 invisible w-screen md:visible md:static fixed top-0">
         <div className="md:container mx-auto flex justify-between items-center">
           <NavLink
-            to={"/home"}
+            to={"/"}
             className="text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md "
           >
             Home
@@ -39,7 +39,7 @@ const NavBar = () => {
         </div>
         <div className="grid gap-8 grid-cols-2 ">
           <NavLink
-            to={"/home"}
+            to={"/"}
             className="text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 flex justify-center items-center rounded-md m-2"
           >
             Home
@@ -48,7 +48,7 @@ const NavBar = () => {
             onClick={() => {
               navigate("/add", { state: { product: undefined } });
             }}
-            className="flex justify-center items-center text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md whitespace-nowrap flex items-center m-2"
+            className="justify-center text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md whitespace-nowrap flex items-center m-2"
           >
             <span className="mr-2">Add Product</span>
             <PlusOutlined />

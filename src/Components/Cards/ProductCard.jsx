@@ -23,9 +23,7 @@ const ProductCard = ({ product }) => {
   };
 
   useEffect(() => {
-    if (product.colors) {
-      setColors(groupBy(product.colors, "size"));
-    }
+    product.colors && setColors(groupBy(product.colors, "size"));
   }, [product.colors]);
   return (
     <>
@@ -79,9 +77,7 @@ const ProductCard = ({ product }) => {
                 </span>
               </div>
             ) : (
-              <button className="border text-sm border-0 border-black h-7">
-                Rating Not Available
-              </button>
+              <button className="text-sm h-7">Rating Not Available</button>
             )}
             {/* Displaying Sizes If any other wise Not Available */}
             <div className="flex overflow-x-auto items-center h-7">
@@ -104,7 +100,7 @@ const ProductCard = ({ product }) => {
                   );
                 })
               ) : (
-                <button className="border text-sm border-0 border-black mr-3">
+                <button className="text-sm border-0 border-black mr-3">
                   Size Not Available
                 </button>
               )}
@@ -112,13 +108,13 @@ const ProductCard = ({ product }) => {
 
             {/* Displaying Color by selected size If any other wise Not Available */}
             <div className="flex overflow-x-auto h-7 items-center">
-              {colors ? (
+              {product.colors && colors ? (
                 colors[product?.sizeData[selectedSize]?.name]?.map(
                   (color, index) => {
                     return (
                       <span
                         key={`${product.id}${index}`}
-                        className={`border border-2 rounded-full border-transparent mr-3 p-2`}
+                        className={`border-2 rounded-full border-transparent mr-3 p-2`}
                         style={{ backgroundColor: color.hex }}
                         onClick={() => {}}
                       ></span>
@@ -126,7 +122,7 @@ const ProductCard = ({ product }) => {
                   }
                 )
               ) : (
-                <button className="border text-sm border-0 border-black mr-3">
+                <button className="text-sm border-0 border-black mr-3">
                   Colors Not Available
                 </button>
               )}

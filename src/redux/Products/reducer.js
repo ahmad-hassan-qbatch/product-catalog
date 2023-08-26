@@ -105,12 +105,20 @@ export default (state = initialState, { type, payload }) => {
         error: null,
       };
 
+    case actions.RESET:
+      return {
+        ...state,
+        loading: false,
+        success: null,
+      };
+
     case actions.API_ERROR:
       return {
         ...state,
         loading: false,
         error: `${payload.error}`,
       };
+
     default:
       return state;
   }

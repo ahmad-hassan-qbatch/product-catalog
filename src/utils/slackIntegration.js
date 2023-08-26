@@ -1,10 +1,12 @@
+/* eslint-disable no-undef */
 import axios from "axios";
 
+const slackHookURL = process.env.REACT_APP_SLACK_URL;
 export default async (error) => {
   await axios
     .post(
-      "https://hooks.slack.com/services/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",
-      { text: `Error ${error.name}.\n${error.message}"` },
+      slackHookURL,
+      { text: `Error ${error.name}.\n${error.message}` },
       {
         headers: {
           "Content-Type": "text/plain",

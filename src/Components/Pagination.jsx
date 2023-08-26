@@ -4,14 +4,16 @@ import { useNavigate } from "react-router-dom";
 
 const Pagination = ({ totalPages, selectedPage, category, searchParam }) => {
   const navigate = useNavigate();
+
   const handlePageNoClick = (pageNo) => {
-    if (!searchParam && !category) navigate(`/home/?pageNo=${pageNo}`);
+    if (!searchParam && !category) navigate(`/?pageNo=${pageNo}`);
     else if (category) {
-      navigate(`/home/?pageNo=${pageNo}&category=${category}`);
+      navigate(`/?pageNo=${pageNo}&category=${category}`);
     } else {
-      navigate(`/home/?pageNo=${pageNo}&search=${searchParam}`);
+      navigate(`/?pageNo=${pageNo}&search=${searchParam}`);
     }
   };
+
   const renderLoop = useCallback(() => {
     const elements = [];
     const selectedColor = "bg-gray-800";
@@ -62,7 +64,7 @@ const Pagination = ({ totalPages, selectedPage, category, searchParam }) => {
           </button>
           <button
             onClick={handlePrevClick}
-            className={`flex items-center justify-center hidden  md:flow-root px-4 md:px-6 h-10 leading-none text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 hover:text-gray-800`}
+            className={`items-center justify-center hidden  md:flow-root px-4 md:px-6 h-10 leading-none text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 hover:text-gray-800`}
           >
             Previous
           </button>
@@ -71,7 +73,7 @@ const Pagination = ({ totalPages, selectedPage, category, searchParam }) => {
         <div className="flex">
           <button
             onClick={handleNextClick}
-            className={`flex items-center hidden md:flow-root :contents md:visible justify-center px-4 md:px-6 h-10 leading-none  text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 hover:text-gray-800`}
+            className={`items-center hidden md:flow-root :contents md:visible justify-center px-4 md:px-6 h-10 leading-none  text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 hover:text-gray-800`}
           >
             Next
           </button>

@@ -8,8 +8,7 @@ const CategorySlider = ({ categories, selectedCategory }) => {
   const navigate = useNavigate();
 
   const handleCategoryClick = (category) => {
-    if (category) navigate(`/home?category=${category}`);
-    else navigate(`/home`);
+    category ? navigate(`/?category=${category}`) : navigate(`/`);
   };
   return (
     <div className="flex overflow-x-auto whitespace-nowrap p-4 mt-10">

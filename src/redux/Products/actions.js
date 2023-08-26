@@ -17,7 +17,8 @@ const actions = {
   SEARCH_PRODUCT_BEGIN: "SEARCH_PRODUCT_BEGIN",
   SEARCH_PRODUCT_SUCCESS: "SEARCH_PRODUCT_SUCCESS",
 
-  API_ERROR: "API_ERROR",
+  RESET: "RESET",
+  API_ERROR: "PRODUCT_API_ERROR",
 
   fetchProductsBegin: () => {
     return {
@@ -101,6 +102,12 @@ const actions = {
     return {
       type: actions.API_ERROR,
       payload: { error },
+    };
+  },
+
+  reset: () => {
+    return {
+      type: actions.RESET,
     };
   },
 };

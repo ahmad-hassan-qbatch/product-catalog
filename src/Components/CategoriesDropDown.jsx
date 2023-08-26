@@ -7,8 +7,7 @@ import { useNavigate } from "react-router-dom";
 const CategoryDropDown = ({ selectedCategory, categories }) => {
   const navigate = useNavigate();
   const handleCategoryClick = (category) => {
-    if (category) navigate(`/home?category=${category}`);
-    else navigate(`/home`);
+    category ? navigate(`/?category=${category}`) : navigate(`/`);
   };
   return (
     <>
@@ -17,11 +16,9 @@ const CategoryDropDown = ({ selectedCategory, categories }) => {
           className="appearance-none pr-1 text-sm font-medium text-gray-700 focus:outline-none border-r-[1px] bg-transparent"
           value={selectedCategory}
           onChange={(e) => {
-            if (e.target.value === "Select a Category") {
-              handleCategoryClick("");
-            } else {
-              handleCategoryClick(e.target.value);
-            }
+            e.target.value === "Select a Category"
+              ? handleCategoryClick("")
+              : handleCategoryClick(e.target.value);
           }}
         >
           <option>Select a Category</option>
