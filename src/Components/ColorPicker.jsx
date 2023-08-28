@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import { ChromePicker } from "react-color";
+import RenderIf from "./RenderIf";
 
 const ColorPicker = ({ field, form }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
@@ -17,9 +18,9 @@ const ColorPicker = ({ field, form }) => {
       >
         Choose Color
       </p>
-      {showColorPicker && (
+      <RenderIf isTrue={showColorPicker}>
         <ChromePicker color={field.value} onChange={handleChange} />
-      )}
+      </RenderIf>
     </div>
   );
 };

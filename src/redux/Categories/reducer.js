@@ -4,7 +4,6 @@ const initialState = {
   categories: [],
   error: null,
   loading: false,
-  success: null,
 };
 
 export default (state = initialState, { type, payload }) => {

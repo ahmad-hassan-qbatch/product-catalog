@@ -5,6 +5,8 @@ import slackMessage from "../../utils/slackIntegration";
 
 const categoryURL = `${process.env.REACT_APP_API_URL}/products/categories`;
 
+const isSuccess = (status) => status >= 200 && status < 300;
+
 export const fetchAllCategory = () => async (dispatch) => {
   try {
     dispatch(actions.fetchCategoriesBegin());
@@ -14,8 +16,8 @@ export const fetchAllCategory = () => async (dispatch) => {
         limit: 0,
       },
     });
-
-    dispatch(actions.fetchCategoriesSuccess(response.data));
+    isSuccess(response.status) &&
+      dispatch(actions.fetchCategoriesSuccess(response.data));
   } catch (error) {
     await slackMessage(error);
     dispatch(actions.apiError(error));

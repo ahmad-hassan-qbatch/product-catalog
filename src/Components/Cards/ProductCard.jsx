@@ -11,6 +11,7 @@ import { EditOutlined, DeleteOutlined, StarFilled } from "@ant-design/icons";
 import Colors from "./Colors";
 import Sizes from "./Sizes";
 import Button from "../Button";
+import RenderIf from "../RenderIf";
 
 const ProductCard = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(0);
@@ -74,45 +75,56 @@ const ProductCard = ({ product }) => {
             </div>
 
             {/* Displaying Rating if any otherwise Not Available*/}
-            {product.rating ? (
+            <RenderIf
+              isTrue={product.rating}
+              fallback={
+                <Button className="text-sm h-7" label="Rating Not Available" />
+              }
+            >
               <div className="flex items-center h-7">
                 <StarFilled className="w-4 h-4 text-yellow-300 mr-1" />
                 <span className="text-md font-semibold tracking-tight text-gray-900">
                   {product.rating}
                 </span>
               </div>
-            ) : (
-              <Button className="text-sm h-7" label="Rating Not Available" />
-            )}
+            </RenderIf>
 
             {/* Displaying Sizes If any other wise Not Available */}
             <div className="flex overflow-x-auto items-center h-7">
-              {product?.sizeData ? (
+              <RenderIf
+                isTrue={product?.sizeData}
+                fallback={
+                  <Button
+                    className="text-sm border-0 border-black mr-3"
+                    label="Size Not Available"
+                  />
+                }
+              >
                 <Sizes
                   sizes={product?.sizeData}
                   selectedSize={selectedSize}
                   setSelectedSize={setSelectedSize}
                 />
-              ) : (
-                <Button
-                  className="text-sm border-0 border-black mr-3"
-                  label="Size Not Available"
-                />
-              )}
+              </RenderIf>
             </div>
 
             {/* Displaying Color by selected size If any other wise Not Available */}
             <div className="flex overflow-x-auto h-7 items-center">
-              {product.colors && colors ? (
+              <RenderIf
+                isTrue={product.colors && colors}
+                fallback={
+                  <Button
+                    className="text-sm border-0 border-black mr-3"
+                    label="Colors Not Available"
+                  />
+                }
+              >
                 <Colors
-                  colors={colors[product?.sizeData[selectedSize]?.name]}
+                  colors={colors}
+                  sizeData={product.sizeData}
+                  selectedSize={selectedSize}
                 />
-              ) : (
-                <Button
-                  className="text-sm border-0 border-black mr-3"
-                  label="Colors Not Available"
-                />
-              )}
+              </RenderIf>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -120,9 +132,10 @@ const ProductCard = ({ product }) => {
                 onClick={() => setIsDialogVisible(true)}
                 className={`flex items-center justify-center w-3/4 px-4 py-2 text-white bg-gradient-to-r to-red-400 from-red-600 hover:bg-red-600 focus:outline-none border border-transparent rounded-md transition duration-300 ease-in-out hover:scale-110`}
               >
-                <DeleteOutlined className="mr-2" />
-                Delete
+                <DeleteOutlined className="lg:mr-2 md:text-[25px]" />
+                <span className="hidden lg:flex"> Delete</span>
               </button>
+
               <button
                 onClick={() => {
                   navigate("/edit", { state: { product: product } });
@@ -137,13 +150,13 @@ const ProductCard = ({ product }) => {
         </div>
 
         <div className="z-10">
-          {isDialogVisible && (
+          <RenderIf isTrue={isDialogVisible}>
             <DeleteDialog
               handleDelete={handleDelete}
               id={product.id}
               setIsDialogVisible={setIsDialogVisible}
             />
-          )}
+          </RenderIf>
         </div>
       </div>
     </>

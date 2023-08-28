@@ -15,6 +15,7 @@ const CategoryDropDown = ({ selectedCategory, categories }) => {
         <select
           className="appearance-none pr-1 text-sm font-medium text-gray-700 focus:outline-none border-r-[1px] bg-transparent"
           value={selectedCategory}
+          name="category"
           onChange={(e) => {
             e.target.value === "Select a Category"
               ? handleCategoryClick("")

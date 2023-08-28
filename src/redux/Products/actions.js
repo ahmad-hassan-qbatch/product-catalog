@@ -26,10 +26,10 @@ const actions = {
     };
   },
 
-  fetchProductsSuccess: (data) => {
+  fetchProductsSuccess: (payload) => {
     return {
       type: actions.FETCH_PRODUCTS_SUCCESS,
-      payload: { products: data.products, total: data.total },
+      payload,
     };
   },
 
@@ -39,10 +39,10 @@ const actions = {
     };
   },
 
-  fetchProductsByCategorySuccess: (data) => {
+  fetchProductsByCategorySuccess: (payload) => {
     return {
       type: actions.FETCH_PRODUCTS_BY_CATEGORY_SUCCESS,
-      payload: { products: data.products, total: data.total },
+      payload,
     };
   },
 
@@ -52,10 +52,10 @@ const actions = {
     };
   },
 
-  addProductSuccess: (newProduct) => {
+  addProductSuccess: (payload) => {
     return {
       type: actions.ADD_PRODUCT_SUCCESS,
-      payload: { newProduct },
+      payload,
     };
   },
 
@@ -65,10 +65,10 @@ const actions = {
     };
   },
 
-  editProductSuccess: (editProduct) => {
+  editProductSuccess: (product) => {
     return {
       type: actions.EDIT_PRODUCT_SUCCESS,
-      payload: { product: editProduct },
+      payload: { product },
     };
   },
 
@@ -78,10 +78,10 @@ const actions = {
     };
   },
 
-  searchProductSuccess: (data) => {
+  searchProductSuccess: (payload) => {
     return {
       type: actions.SEARCH_PRODUCT_SUCCESS,
-      payload: data,
+      payload,
     };
   },
 

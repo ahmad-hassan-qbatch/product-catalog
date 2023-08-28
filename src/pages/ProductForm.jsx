@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ColorVariation from "../Components/ColorVariation";
+import RenderIf from "../Components/RenderIf";
 
 const SizeVariation = React.lazy(() =>
   import(/* webpackChunkName: "SizeVariation" */ "../Components/SizeVariation")
@@ -87,20 +88,17 @@ function ProductForm() {
       >
         {({ values, setFieldValue, errors }) => (
           <Form className="md:w-1/2 w-auto flex flex-col items-center justify-center rounded-lg bg-white p-8 shadow-md">
-            {values?.id ? (
-              <h1 className="mb-4 text-2xl font-bold">Edit Product</h1>
-            ) : (
-              <h1 className="mb-4 text-2xl font-bold">Add Product</h1>
-            )}
-
-            {values?.thumbnail && (
+            <h1 className="mb-4 text-2xl font-bold">
+              {values?.id ? "Edit Product" : "Add Product"}
+            </h1>
+            <RenderIf isTrue={values?.thumbnail}>
               <img
                 className="h-6/12 w-6/12 border-[6px] border-white bg-white"
                 src={values.thumbnail}
                 alt="Selected"
                 style={{ maxWidth: "300px" }}
               />
-            )}
+            </RenderIf>
 
             <div className="grid grid-cols-1 gap-2 w-full lg:grid-cols-2 mb-2">
               <div>
@@ -192,12 +190,16 @@ function ProductForm() {
                 />
               </div>
             </div>
-            {values?.sizeData ? (
-              <>
-                <SizeVariation values={values} errors={errors.sizeData} />
-                <ColorVariation values={values} errors={errors.colors} />
-              </>
-            ) : (
+            {/* RenderIf */}
+            <RenderIf
+              isTrue={!values?.sizeData}
+              fallback={
+                <>
+                  <SizeVariation values={values} errors={errors.sizeData} />
+                  <ColorVariation values={values} errors={errors.colors} />
+                </>
+              }
+            >
               <div className="grid grid-cols-1 gap-2 w-full lg:grid-cols-2 mb-2">
                 <div>
                   <Field
@@ -224,7 +226,8 @@ function ProductForm() {
                   />
                 </div>
               </div>
-            )}
+            </RenderIf>
+
             <Button
               className="w-1/2 rounded-full bg-slate-500 px-4 py-2 text-white hover:bg-slate-600"
               type="submit"

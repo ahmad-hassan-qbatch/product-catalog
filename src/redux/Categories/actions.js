@@ -10,10 +10,10 @@ const actions = {
     };
   },
 
-  fetchCategoriesSuccess: (categories) => {
+  fetchCategoriesSuccess: (payload) => {
     return {
       type: actions.FETCH_CATEGORIES_SUCCESS,
-      payload: categories,
+      payload,
     };
   },
 

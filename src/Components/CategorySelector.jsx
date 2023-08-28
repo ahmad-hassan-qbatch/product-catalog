@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Loader from "./Loader";
 import { toast } from "react-toastify";
 import { startCase } from "lodash";
+import RenderIf from "./RenderIf";
 
 const CategoriesSider = React.lazy(() =>
   import(/* webpackChunkName: "CategoriesSider" */ "./CategoriesSider")
@@ -32,27 +33,28 @@ const CategorySelector = ({ category }) => {
 
   return (
     <>
-      {!categoryLoading ? (
-        <>
-          <LazyLoading>
-            <CategoriesDropDown
-              categories={categories}
-              selectedCategory={category ?? ""}
-            />
-            <CategoriesSider
-              categories={categories}
-              selectedCategory={category ?? ""}
-            />
-          </LazyLoading>
-        </>
-      ) : (
-        <div className="flex flex-col items-center justify-center h-screen ">
-          <Loader />
-        </div>
-      )}
-      <h1 className="text-3xl font-bold text-gray-900 overflow-hidden whitespace-nowrap overflow-ellipsis mb-4">
-        {startCase(category)}
-      </h1>
+      <RenderIf
+        isTrue={!categoryLoading}
+        fallback={
+          <div className="flex flex-col items-center justify-center h-screen ">
+            <Loader />
+          </div>
+        }
+      >
+        <LazyLoading>
+          <CategoriesDropDown
+            categories={categories}
+            selectedCategory={category ?? ""}
+          />
+          <CategoriesSider
+            categories={categories}
+            selectedCategory={category ?? ""}
+          />
+        </LazyLoading>
+        <h1 className="text-3xl font-bold text-gray-900 overflow-hidden whitespace-nowrap overflow-ellipsis mb-4">
+          {startCase(category)}
+        </h1>
+      </RenderIf>
     </>
   );
 };

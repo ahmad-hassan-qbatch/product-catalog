@@ -1,6 +1,7 @@
 import actions from "./actions";
 import _ from "lodash";
 
+const myProducts = 100;
 let latestId = 100;
 const initialState = {
   products: [],
@@ -17,7 +18,10 @@ export default (state = initialState, { type, payload }) => {
       return { ...state, loading: true, success: null, error: null };
 
     case actions.FETCH_PRODUCTS_SUCCESS:
-      newAdded = _.takeWhile(state.products, (product) => product.id > 100);
+      newAdded = _.takeWhile(
+        state.products,
+        (product) => product.id > myProducts
+      );
       return {
         ...state,
         loading: false,
@@ -30,7 +34,10 @@ export default (state = initialState, { type, payload }) => {
       return { ...state, success: null, loading: true };
 
     case actions.FETCH_PRODUCTS_BY_CATEGORY_SUCCESS:
-      newAdded = _.takeWhile(state.products, (product) => product.id > 100);
+      newAdded = _.takeWhile(
+        state.products,
+        (product) => product.id > myProducts
+      );
       return {
         ...state,
         loading: false,
@@ -49,7 +56,7 @@ export default (state = initialState, { type, payload }) => {
         error: null,
         total: payload.total,
         products: _.unionBy(
-          _.takeWhile(state.products, (product) => product.id > 100),
+          _.takeWhile(state.products, (product) => product.id > myProducts),
           payload.products,
           "id"
         ),
@@ -70,10 +77,7 @@ export default (state = initialState, { type, payload }) => {
         error: null,
         success: "Product Added",
         total: state.total + 1,
-        products: [
-          { ...payload.newProduct, id: ++latestId },
-          ...state.products,
-        ],
+        products: [{ ...payload, id: ++latestId }, ...state.products],
       };
 
     case actions.EDIT_PRODUCT_BEGIN:

@@ -2,6 +2,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { WarningFilled } from "@ant-design/icons";
+import RenderIf from "./RenderIf";
 
 const NotFound = ({ errorMsg }) => {
   return (
@@ -13,11 +14,11 @@ const NotFound = ({ errorMsg }) => {
           <h1 className=" text-2xl font-semibold text-gray-800 md:text-3xl">
             {errorMsg ? errorMsg : "Page not found"}
           </h1>
-          {!errorMsg && (
+          <RenderIf isTrue={!errorMsg}>
             <p className="mt-4 text-gray-500 ">
               The page you are looking for doesn&apos;t exist.
             </p>
-          )}
+          </RenderIf>
 
           <div className="flex items-center w-full mt-6 gap-x-3 shrink-0 sm:w-auto">
             <NavLink

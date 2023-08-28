@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 
-const Colors = ({ colors }) => {
+const Colors = ({ sizeData, colors, selectedSize }) => {
   return (
     <>
-      {colors.map((color, index) => {
+      {colors[sizeData[selectedSize]?.name].map((color, index) => {
         return (
           <span
             key={`${index}`}
