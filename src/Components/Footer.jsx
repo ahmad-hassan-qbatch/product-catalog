@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 
 function Footer() {
   return (
-    <footer className="bg-gray-800 w-full shadow">
-      <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+    <footer className="bg-gray-800 shadow">
+      <div className="mx-10 p-4 md:py-8">
         <div className="sm:flex sm:items-center sm:justify-between">
           <a href="#" className="flex items-center mb-4 sm:mb-0">
             <img src={logo} className="h-8 mr-3" alt="Logo" />
-            <span className="self-center text-2xl text-white font-semibold whitespace-nowrap">
+            <span className=" text-2xl text-white font-semibold whitespace-nowrap">
               Prodcut Catalog App
             </span>
           </a>

@@ -116,21 +116,22 @@ const ProductCard = ({ product }) => {
             </div>
 
             <div className="grid grid-cols-2 gap-2">
-              <Button
+              <button
                 onClick={() => setIsDialogVisible(true)}
                 className={`flex items-center justify-center w-3/4 px-4 py-2 text-white bg-gradient-to-r to-red-400 from-red-600 hover:bg-red-600 focus:outline-none border border-transparent rounded-md transition duration-300 ease-in-out hover:scale-110`}
-                label="Delete"
-                leftChildern={<DeleteOutlined className="mr-2" />}
-              />
-
-              <Button
+              >
+                <DeleteOutlined className="mr-2" />
+                Delete
+              </button>
+              <button
                 onClick={() => {
                   navigate("/edit", { state: { product: product } });
                 }}
                 className="flex items-center justify-center w-auto text-white hover:bg-blue-800 bg-gradient-to-r from-purple-600 to-blue-600  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition duration-300 ease-in-out hover:scale-110"
-                label="Edit"
-                rightChildern={<EditOutlined className="ml-2" />}
-              />
+              >
+                Edit
+                <EditOutlined className="ml-2" />
+              </button>
             </div>
           </div>
         </div>

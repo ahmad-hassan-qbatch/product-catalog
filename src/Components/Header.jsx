@@ -5,7 +5,6 @@ import { PlusOutlined } from "@ant-design/icons";
 import Search from "./Search";
 
 import "../App.css";
-import Button from "./Button";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -23,14 +22,15 @@ const Header = () => {
           <div className="w-screen text-center m-2">
             <Search />
           </div>
-          <Button
+          <button
             onClick={() => {
               navigate("/add", { state: { product: undefined } });
             }}
-            className="justify-center text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md whitespace-nowrap flex items-center m-2"
-            rightChildern={<PlusOutlined className="ml-2" />}
-            label="Add Product"
-          />
+            className="justify-center text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md whitespace-nowrap flex items-center"
+          >
+            Add Product
+            <PlusOutlined className="ml-2" />
+          </button>
         </div>
       </div>
       <div className="bg-gray-800 flow-root static md:hidden p-2">
@@ -44,14 +44,15 @@ const Header = () => {
           >
             Home
           </NavLink>
-          <Button
+          <button
             onClick={() => {
               navigate("/add", { state: { product: undefined } });
             }}
-            className="justify-center text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md whitespace-nowrap flex items-center m-2"
-            rightChildern={<PlusOutlined />}
-            label="Add Product"
-          />
+            className="justify-center text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md whitespace-nowrap flex items-center"
+          >
+            Add Product
+            <PlusOutlined className="ml-2" />
+          </button>
         </div>
       </div>
     </>

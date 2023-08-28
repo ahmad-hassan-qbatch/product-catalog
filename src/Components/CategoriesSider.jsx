@@ -11,7 +11,6 @@ const CategorySlider = ({ categories, selectedCategory }) => {
   const handleCategoryClick = (category) => {
     category ? navigate(`/?category=${category}`) : navigate(`/`);
   };
-  console.log(categories);
   return (
     <div className="flex overflow-x-auto whitespace-nowrap p-4 mt-10">
       <Button
