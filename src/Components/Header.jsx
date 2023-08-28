@@ -12,8 +12,8 @@ const Header = () => {
 
   return (
     <>
-      <div className="bg-gray-800 invisible w-screen md:visible md:static fixed top-0">
-        <div className="md:container mx-auto flex justify-between items-center">
+      <div className="bg-gray-800 hidden w-screen md:flow-root md:static">
+        <div className="md:mx-10 flex justify-between items-center">
           <NavLink
             to={"/"}
             className="text-white text-lg font-semibold bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md "
@@ -33,7 +33,7 @@ const Header = () => {
           />
         </div>
       </div>
-      <div className="bg-gray-800 visible static md:invisible md:fixed md:top-0 p-2">
+      <div className="bg-gray-800 flow-root static md:hidden p-2">
         <div className="ml-2 mr-2 w-auto text-center">
           <Search />
         </div>
