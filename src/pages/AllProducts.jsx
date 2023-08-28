@@ -7,7 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 import CategorySelector from "../Components/CategorySelector";
 import Products from "../Components/Products";
-import PropTypesExample from "../Components/PropTypesExample";
 
 const AllProducts = () => {
   const { search } = useLocation();
@@ -31,7 +30,6 @@ const AllProducts = () => {
 
   return (
     <div className="m-10">
-      <PropTypesExample />
       <ToastContainer />
       <CategorySelector category={category} />
       <Products category={category} pageNo={pageNo} searchParam={searchParam} />
